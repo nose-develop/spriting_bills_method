@@ -3,6 +3,8 @@ import { ModeSpecificSettings } from "@/components/ModeSpecificSettings";
 import { MODE_LABELS, ROUNDING_UNITS } from "@/lib/split/constants";
 import type { MemberInput, RandomIntensity, RoundingUnit, SplitMode } from "@/lib/split";
 
+const BOTTOM_AMOUNT_ERROR_MEMBER_THRESHOLD = 5;
+
 type InputScreenProps = {
   errors: string[];
   memberCount: number;
@@ -36,6 +38,17 @@ export function InputScreen({
   onChangeRoundingUnit,
   onChangeTotalAmount,
 }: InputScreenProps) {
+  const normalizedTotalAmount = totalAmount.replace(/,/g, "").trim();
+  const amountValue = Number(normalizedTotalAmount);
+  const bottomAmountErrors =
+    errors.length > 0 && memberCount >= BOTTOM_AMOUNT_ERROR_MEMBER_THRESHOLD
+      ? !normalizedTotalAmount
+        ? ["合計金額を入力してください"]
+        : !Number.isInteger(amountValue) || amountValue <= 0
+          ? ["合計金額は1円以上の整数で入力してください"]
+          : []
+      : [];
+
   return (
     <section className="min-h-dvh px-5 py-8">
       <div className="mx-auto flex w-full max-w-md flex-col gap-6">
@@ -119,6 +132,17 @@ export function InputScreen({
           onChangeRandomIntensity={onChangeRandomIntensity}
           randomIntensity={randomIntensity}
         />
+
+        {bottomAmountErrors.length > 0 ? (
+          <div className="rounded-lg border border-red-400/50 bg-red-950/70 p-4 text-sm text-red-100">
+            <p className="font-bold">合計金額を確認してください</p>
+            <ul className="mt-2 list-disc space-y-1 pl-5">
+              {bottomAmountErrors.map((error) => (
+                <li key={error}>{error}</li>
+              ))}
+            </ul>
+          </div>
+        ) : null}
 
         <button
           className="h-14 rounded-lg bg-orange-500 px-5 text-lg font-black text-zinc-950 shadow-lg shadow-orange-950/40 transition hover:bg-yellow-300 focus:outline-none focus:ring-2 focus:ring-yellow-300"
