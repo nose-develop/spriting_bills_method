@@ -39,6 +39,7 @@ export default function Home() {
   const [errors, setErrors] = useState<string[]>([]);
   const [copyStatus, setCopyStatus] = useState("");
   const [rouletteTick, setRouletteTick] = useState(0);
+  const [rouletteResolved, setRouletteResolved] = useState(false);
 
   const rouletteName = useMemo(() => {
     if (!result || result.mode !== "roulette") {
@@ -60,6 +61,7 @@ export default function Home() {
       window.clearInterval(intervalId);
       const payerIndex = result.payments.findIndex((payment) => payment.isRemainderPayer);
       setRouletteTick(payerIndex >= 0 ? payerIndex : 0);
+      setRouletteResolved(true);
     }, 1200);
 
     return () => {
@@ -114,6 +116,7 @@ export default function Home() {
         roundingUnit,
         randomIntensity,
       });
+      setRouletteResolved(calculated.mode !== "roulette");
       setResult(calculated);
       setErrors([]);
       setCopyStatus("");
@@ -151,6 +154,7 @@ export default function Home() {
     setResult(null);
     setErrors([]);
     setCopyStatus("");
+    setRouletteResolved(false);
   };
 
   return (
@@ -184,6 +188,7 @@ export default function Home() {
           onRecalculate={runCalculation}
           onReset={handleReset}
           result={result}
+          rouletteResolved={rouletteResolved}
           rouletteName={rouletteName}
         />
       ) : null}
