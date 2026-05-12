@@ -14,7 +14,9 @@ export function MemberFields({ members, mode, onChangeMember }: MemberFieldsProp
     <div className="space-y-3">
       <div>
         <h2 className="text-lg font-bold text-zinc-50">メンバー</h2>
-        <p className="text-sm text-zinc-400">名前は空欄でも計算できますが、1人以上は入力してください。</p>
+        <p className="text-sm text-zinc-400">
+          名前が空欄の場合は「メンバー1」のように自動表示されます。
+        </p>
       </div>
 
       <div className="space-y-3">
