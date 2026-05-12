@@ -6,6 +6,7 @@ import type { CalculationResult } from "@/lib/split";
 type ResultScreenProps = {
   copyStatus: string;
   result: CalculationResult;
+  rouletteResolved: boolean;
   rouletteName: string;
   onBackToInput: () => void;
   onCopy: () => void;
@@ -16,6 +17,7 @@ type ResultScreenProps = {
 export function ResultScreen({
   copyStatus,
   result,
+  rouletteResolved,
   rouletteName,
   onBackToInput,
   onCopy,
@@ -26,6 +28,7 @@ export function ResultScreen({
     formatResultText(result),
   )}`;
   const remainderPayer = result.payments.find((payment) => payment.isRemainderPayer);
+  const revealRemainder = result.mode !== "roulette" || rouletteResolved;
 
   return (
     <section className="min-h-dvh px-5 py-8">
@@ -47,16 +50,22 @@ export function ResultScreen({
 
         {result.mode === "roulette" && remainderPayer ? (
           <div className="rounded-lg border border-yellow-300 bg-red-700 p-4 text-center text-white shadow-lg shadow-red-950/50">
-            <p className="text-sm font-bold text-yellow-100">端数ルーレット</p>
+            <p className="text-sm font-bold text-yellow-100">
+              {rouletteResolved ? "端数担当が決定" : "端数ルーレット中"}
+            </p>
             <p className="mt-2 text-2xl font-black">
-              {rouletteName || remainderPayer.name}
+              {rouletteResolved ? remainderPayer.name : rouletteName || "抽選中"}
             </p>
           </div>
         ) : null}
 
         <div className="grid gap-3">
           {result.payments.map((payment) => (
-            <PaymentCard key={payment.memberId} payment={payment} />
+            <PaymentCard
+              key={payment.memberId}
+              payment={payment}
+              revealRemainder={revealRemainder}
+            />
           ))}
         </div>
 

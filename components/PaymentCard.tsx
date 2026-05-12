@@ -4,13 +4,16 @@ import type { PaymentResult } from "@/lib/split";
 
 type PaymentCardProps = {
   payment: PaymentResult;
+  revealRemainder?: boolean;
 };
 
-export function PaymentCard({ payment }: PaymentCardProps) {
+export function PaymentCard({ payment, revealRemainder = true }: PaymentCardProps) {
+  const showRemainder = revealRemainder && payment.isRemainderPayer;
+
   return (
     <article
       className={`rounded-lg border p-4 shadow-lg shadow-black/20 ${
-        payment.isRemainderPayer
+        showRemainder
           ? "border-yellow-300 bg-yellow-300 text-zinc-950"
           : "border-zinc-700 bg-zinc-900 text-zinc-50"
       }`}
@@ -24,7 +27,7 @@ export function PaymentCard({ payment }: PaymentCardProps) {
                 {ROLE_LABELS[payment.role]} x{payment.weight?.toFixed(1)}
               </span>
             ) : null}
-            {payment.isRemainderPayer ? (
+            {showRemainder ? (
               <span className="rounded bg-red-700 px-2 py-1 text-white">端数担当</span>
             ) : null}
           </div>
