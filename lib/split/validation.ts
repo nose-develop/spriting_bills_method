@@ -1,6 +1,6 @@
 import type { ValidationInput } from "./types";
 
-export const validateInput = ({ totalAmount, memberCount, members }: ValidationInput) => {
+export const validateInput = ({ totalAmount, memberCount }: ValidationInput) => {
   const errors: string[] = [];
   const normalizedAmount = totalAmount.replace(/,/g, "").trim();
   const amount = Number(normalizedAmount);
@@ -13,10 +13,6 @@ export const validateInput = ({ totalAmount, memberCount, members }: ValidationI
 
   if (memberCount < 2) {
     errors.push("人数は2人以上にしてください");
-  }
-
-  if (members.every((member) => member.name.trim() === "")) {
-    errors.push("少なくとも1人の名前を入力してください");
   }
 
   if (Number.isInteger(amount) && amount > 0 && amount < memberCount) {
